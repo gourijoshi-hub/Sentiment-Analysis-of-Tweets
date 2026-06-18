@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trained Models</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url("{{ url_for('static', filename='images/background.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .title {
+            font-size: 2.3rem;
+            margin-top: 40px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .model-img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .model-img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <h1 class="title">Deep Learning Model Visuals</h1>
+
+        <div class="container">
+            <h2>Model Architecture Images</h2>
+
+            <div class="image-grid">
+                {% for img in images %}
+                    <img src="{{ url_for('static', filename=img) }}" class="model-img" alt="Model Architecture {{ loop.index }}">
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
+    </div>
+</body>
+</html>

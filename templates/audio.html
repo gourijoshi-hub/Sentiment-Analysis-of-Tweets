@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predict Using Audio</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background: url('https://wallpapercave.com/wp/wp9127739.png') no-repeat center center/cover;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.55);
+            width: 40%;
+            margin: 80px auto;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px #222;
+        }
+
+        h2, .title {
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            margin-top: -20px;
+            font-size: 22px;
+            opacity: 0.85;
+        }
+
+        button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .3s;
+            color: white;
+        }
+
+        #startBtn {
+            background: #28a745;
+        }
+        #startBtn:hover {
+            background: #1e7e34;
+        }
+
+        #stopBtn {
+            background: #dc3545;
+        }
+        #stopBtn:hover {
+            background: #b52d3b;
+        }
+
+        .back {
+            display: block;
+            text-decoration: none;
+            color: #fff;
+            margin-top: 15px;
+            font-size: 18px;
+            opacity: 0.8;
+            transition: .3s;
+        }
+
+        .back:hover {
+            opacity: 1;
+        }
+
+        #statusText {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>🎧 Voice Based Mental Health Analysis</h2>
+
+    <button id="startBtn">🎤 Start Recording</button>
+    <button id="stopBtn" disabled>⛔ Stop Recording</button>
+    <p id="statusText"></p>
+
+    <a href="{{ url_for('index') }}" class="back">← Go Back</a>
+</div>
+
+<h1 class="title">Speak Freely. We'll Analyze Your Mood.</h1>
+
+<script>
+let mediaRecorder;
+let audioChunks = [];
+
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const statusText = document.getElementById("statusText");
+
+startBtn.onclick = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.start();
+
+        statusText.textContent = "🎙️ Recording...";
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+        mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+        };
+    } catch (err) {
+        alert("Microphone access denied!");
+        console.error(err);
+    }
+};
+
+stopBtn.onclick = () => {
+    mediaRecorder.stop();
+    statusText.textContent = "⏳ Processing...";
+    stopBtn.disabled = true;
+
+    mediaRecorder.onstop = async () => {
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append("audio", blob, "audio.webm");
+
+        const response = await fetch("{{ url_for('audio_predict') }}", {
+            method: "POST",
+            body: formData
+        });
+
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+    };
+};
+</script>
+
+</body>
+</html>

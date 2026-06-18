@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predict Using Text</title>
+
+    <style>
+        /* General page background and font */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url("{{ url_for('static', filename='images/background.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        /* Semi-transparent overlay for readability */
+        .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Heading above form */
+        .title {
+            font-size: 2.3rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        /* Main container */
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Subheading */
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Text area styling */
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        textarea::placeholder {
+            color: #777;
+        }
+
+        /* Button styling (shared for Analyze and Go Back) */
+        button, .back-btn {
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover, .back-btn:hover {
+            background: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,123,255,0.4);
+        }
+
+        /* Spacing for the Go Back button */
+        .back-btn {
+            margin-top: 15px;
+            background: rgba(255, 99, 71, 0.9); /* soft red tone */
+        }
+
+        .back-btn:hover {
+            background: tomato;
+            box-shadow: 0 4px 10px rgba(255,99,71,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <h1 class="title">Mental Health Emotion Analyzer</h1>
+
+        <div class="container">
+            <h2>Type Your Thoughts</h2>
+            <form action="{{ url_for('predict') }}" method="POST">
+                <textarea name="text" placeholder="Write what you feel..." required></textarea>
+                <button type="submit">Analyze</button>
+            </form>
+
+            <!-- Go Back button -->
+            <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emotion Result</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+
+/* Center Layout */
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Glass Card */
+.card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 90%;
+    max-width: 750px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* Title */
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 30px;
+}
+
+/* Boxes */
+.box {
+    background: rgba(255,255,255,0.08);
+    padding: 15px;
+    border-radius: 12px;
+    margin: 12px 0;
+}
+
+/* Labels */
+.label {
+    color: #00e6ff;
+    font-weight: bold;
+}
+
+/* Suggestion */
+.suggestion {
+    background: rgba(0,255,150,0.15);
+    border-left: 5px solid #00ffa6;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+/* Chart */
+.chart-container {
+    margin-top: 30px;
+}
+
+/* Button */
+.btn {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    padding: 12px;
+    background: #00c6ff;
+    color: black;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #0072ff;
+    color: white;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div class="card">
+
+        <h2>🧠 Sentiment Analysis Result</h2>
+
+        <!-- TEXT -->
+        <div class="box">
+            <span class="label">Your Text:</span><br>
+            {{ text }}
+        </div>
+
+        <!-- SENTIMENT -->
+        <div class="box">
+            <span class="label">Detected Sentiment:</span>
+            {{ sentiment }}
+        </div>
+
+        <!-- RESULT -->
+        <div class="box">
+            <span class="label">Mental Health Status:</span>
+            {{ result }}
+        </div>
+
+        <!-- SUGGESTION -->
+        <div class="suggestion">
+            {{ suggestion|safe }}
+        </div>
+
+        <!-- GRAPH -->
+        <div class="chart-container">
+            <canvas id="emotionChart"></canvas>
+        </div>
+
+        <!-- BUTTON -->
+        <a href="{{ url_for('home') }}" class="btn">🔁 Try Another</a>
+
+        <div class="footer">
+            Stay Strong • Stay Positive 💙
+        </div>
+
+    </div>
+</div>
+
+<script>
+const labels = {{ labels | safe }};
+const values = {{ values | safe }};
+
+// Convert to percentage
+const percentValues = values.map(v => (v * 100).toFixed(2));
+
+const ctx = document.getElementById('emotionChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Confidence (%)',
+            data: percentValues,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: { color: "white" }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.raw + "%";
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: "white" }
+            },
+            y: {
+                ticks: { color: "white" },
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
